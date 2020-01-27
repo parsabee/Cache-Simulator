@@ -43,9 +43,7 @@ namespace cs { /* cache simulator */
          * fetches a block with tag `tag',
          *  if tag wasn't found, it's line is brought to the cache
          *  if cache is full, select a victim by victim policy
-         * return a pair of bool and int
-         * pair.first true if tag was found, false otherwise
-         * pair.second tag number of victim, if no victim selected -1.
+         * return a bool, true if tag was found, false otherwise
          */
         bool fetch(int tag, int& hits, int& misses, std::unordered_set<int> *dirties = nullptr);
         void insert(int tag);
@@ -126,7 +124,7 @@ namespace cs { /* cache simulator */
                 :Cache(total_size, block_size, address_size, blocks_per_set, hit_time, miss_penalty, mem, debug) {
             if (debug) {
                 std::cerr << "[SUCCESS] write-back cache system initialized\n";
-                std::cerr << "================================================\n\n";
+                std::cerr << "=============================================\n\n";
             }
         }
 

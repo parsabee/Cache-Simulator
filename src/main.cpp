@@ -5,6 +5,7 @@
 #include <vector>
 #include <getopt.h> /* getopt() */
 #include "driver.hpp"
+#include "errors.hpp"
 
 void usage() {
     std::cerr << "usage: cache-sim [-hvd] -i input-file -c config-level -s associativity\n";
@@ -17,12 +18,12 @@ void version() {
 void help () {
     std::cerr << "usage: cache-sim [-hvd] -i input-file -c config-level -s associativity\n\n";
     std::cerr << "options:\n";
-    std::cerr << "  --config, c             configuration level: 1 | 2 | 3\n";
-    std::cerr << "  --associativity, s      set associativity\n";
-    std::cerr << "  --input, i              input trace file\n";
-    std::cerr << "  --debug, d\n";
-    std::cerr << "  --help, h\n";
-    std::cerr << "  --version, v\n";
+    std::cerr << "  -c, --config             configuration level: 1 | 2 | 3\n";
+    std::cerr << "  -s, --associativity      set associativity: divisible by 2\n";
+    std::cerr << "  -i, --input              input trace file\n";
+    std::cerr << "  -d, --debug\n";
+    std::cerr << "  -h, --help\n";
+    std::cerr << "  -v, --version\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]) {
      * parsing options
      */
         std::ifstream in;
-        std::string config, set;
+        std::string config, set = "";
 
         static struct option longopts[] {
                 { "config", required_argument, nullptr, 'c'},
@@ -74,9 +75,13 @@ int main(int argc, char *argv[]) {
         }
 
         if (!in.is_open()) {
-            std::cerr << "invalid input file \n";
-            exit(status);
+            throw CSException("invalid input file");
         }
+
+        if (set == "") {
+            throw CSException("invalid set associativity");
+        }
+
         std::vector<cs::config> configs;
         if (config == "1") {
             int num_sets = std::stoi(set, 0);
@@ -95,8 +100,7 @@ int main(int argc, char *argv[]) {
                     {0,              cs::write_back, 16384, 128, 32, 1, 100, num_sets, debug}
             };
         } else {
-            std::cerr << "invalid configuration\n";
-            exit(1);
+            throw CSException("invalid configuration");
         }
 
         /*
@@ -108,6 +112,10 @@ int main(int argc, char *argv[]) {
         while (getline(in, line)) {
             std::string type = line.substr(0, line.find(' '));
             std::string addr = line.substr(line.find(' ') + 1);
+            if (type == "" || addr == "") {
+                std::string str = "invalid line -- " + line;
+                throw CSException(str.c_str());
+            }
 
             if (type == "0") {
                 if (debug) {

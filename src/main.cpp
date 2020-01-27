@@ -21,8 +21,8 @@ void help () {
     std::cerr << "  --associativity, s      set associativity\n";
     std::cerr << "  --input, i              input trace file\n";
     std::cerr << "  --debug, d\n";
-    std::cerr << "  --help, d\n";
-    std::cerr << "  --version, d\n";
+    std::cerr << "  --help, h\n";
+    std::cerr << "  --version, v\n";
 }
 
 int main(int argc, char *argv[]) {

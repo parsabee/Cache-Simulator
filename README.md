@@ -15,8 +15,8 @@ options:
   --associativity, s      set associativity
   --input, i              input trace file
   --debug, d
-  --help, d
-  --version, d
+  --help, h
+  --version, v
 ```
 # Example
 ```
